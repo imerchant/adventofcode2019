@@ -17,13 +17,33 @@ namespace AdventOfCode2019.Tests.Solutions
         }
 
         [Fact]
-        public void Puzzle1_CalculateFuelRequirements()
+        public void Puzzle1_CalculateSimpleFuelRequirements()
         {
             var masses = Input.Day01Parse(Input.Day01);
 
-            var fuel = masses.Sum(_calculator.CalculateFuelRequired);
+            var fuel = masses.Sum(_calculator.CalculateSimpleFuelRequired);
 
             fuel.Should().Be(3464735);
+        }
+
+        [Fact]
+        public void Puzzle2_CalculateFullFuelRequirements()
+        {
+            var masses = Input.Day01Parse(Input.Day01);
+
+            var fuel = masses.Sum(_calculator.CalculateFullFuelRequired);
+
+            fuel.Should().Be(5194211);
+        }
+
+        [Theory]
+        [InlineData(12, 2)]
+        [InlineData(14, 2)]
+        [InlineData(1969, 966)]
+        [InlineData(100756, 50346)]
+        public void RocketFuelCalculator_CalculatesFullCorrectly(int mass, int expectedFuel)
+        {
+            _calculator.CalculateFullFuelRequired(mass).Should().Be(expectedFuel);
         }
 
         [Theory]
@@ -31,9 +51,9 @@ namespace AdventOfCode2019.Tests.Solutions
         [InlineData(14, 2)]
         [InlineData(1969, 654)]
         [InlineData(100756, 33583)]
-        public void RocketFuelCalculator_CalculatesCorrectly(int mass, int expectedFuel)
+        public void RocketFuelCalculator_CalculatesSimpleCorrectly(int mass, int expectedFuel)
         {
-            _calculator.CalculateFuelRequired(mass).Should().Be(expectedFuel);
+            _calculator.CalculateSimpleFuelRequired(mass).Should().Be(expectedFuel);
         }
     }
 }
