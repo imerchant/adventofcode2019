@@ -15,6 +15,25 @@ namespace AdventOfCode2019.Day02
             Program = new List<int>(program);
         }
 
+        /// <summary>
+        /// Runs this IntcodeComputer to its halted state. If it takes more than 10,000 steps, halts and throws Exception.
+        /// </summary>
+        public IntcodeComputer RunToHalt()
+        {
+            var count = 0;
+            while (!IsHalted && count++ < 10_000)
+            {
+                Step();
+            }
+
+            if (!IsHalted)
+            {
+                throw new Exception("Ran for 10,000 steps and did not halt");
+            }
+
+            return this;
+        }
+
         public void Step()
         {
             var opcode = Program[_index];
@@ -45,6 +64,16 @@ namespace AdventOfCode2019.Day02
             }
 
             _index += 4;
+        }
+
+        /// <summary>
+        /// Creates a new IntcodeComputer with the given input and runs it to halt.
+        /// </summary>
+        public static IntcodeComputer RunToHalt(IList<int> input)
+        {
+            var computer = new IntcodeComputer(input);
+            computer.RunToHalt();
+            return computer;
         }
     }
 }

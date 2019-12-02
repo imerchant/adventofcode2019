@@ -19,14 +19,40 @@ namespace AdventOfCode2019.Tests.Solutions
             input[1] = 12;
             input[2] = 2;
 
-            var computer = new IntcodeComputer(input);
-
-            while (!computer.IsHalted)
-            {
-                computer.Step();
-            }
+            var computer = new IntcodeComputer(input).RunToHalt();
 
             computer.Program[0].Should().Be(4576384);
+        }
+
+        [Fact]
+        public void Puzzle2_FindNounAndVerb_ThatOutputs19690720()
+        {
+            var input = Input.Day02Parse(Input.Day02);
+            int noun = 0, verb = 0;
+            var found = false;
+
+            for (noun = 0; noun < 100; ++noun)
+            {
+                for (verb = 0; verb < 100; ++verb)
+                {
+                    input[1] = noun;
+                    input[2] = verb;
+
+                    var computer = IntcodeComputer.RunToHalt(input);
+                    if (computer.Program[0] == 19690720)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found)
+                {
+                    break;
+                }
+            }
+
+            ((100 * noun) + verb).Should().Be(5398);
         }
 
         [Theory]
@@ -42,10 +68,7 @@ namespace AdventOfCode2019.Tests.Solutions
 
             var computer = new IntcodeComputer(input);
 
-            while (!computer.IsHalted)
-            {
-                computer.Step();
-            }
+            computer.RunToHalt();
 
             computer.Program.Should().BeEquivalentTo(expectedResult);
         }
