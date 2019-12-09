@@ -15,15 +15,30 @@ namespace AdventOfCode2019.Day03
             return ManhattanDistance(wiresCrossAt.First());
         }
 
-        private static HashSet<(int X, int Y)> GetWirePresentAt(IList<string> wire)
+        public IList<(int X, int Y, int FirstWireSteps, int SecondWireSteps, int CombinedSteps)> FindSteps(IList<string> firstWire, IList<string> secondWire)
         {
-            var wirePresentAt = new HashSet<(int X, int Y)>();
+            var first = GetWirePresentAt(firstWire).ToList();
+            var second = GetWirePresentAt(secondWire).ToList();
+
+            var intersections = first.Intersect(second);
+
+            var data = from intersection in intersections
+                let firstWireSteps = first.IndexOf(intersection) + 1 // +1 for each since (0,0) isn't in the collection
+                let secondWireSteps = second.IndexOf(intersection) + 1
+                select (intersection.X, intersection.Y, firstWireSteps, secondWireSteps, firstWireSteps + secondWireSteps);
+
+            return data.OrderBy(x => x.Item5).ToList();
+        }
+
+        private static IList<(int X, int Y)> GetWirePresentAt(IList<string> wire)
+        {
+            var wirePresentAt = new List<(int X, int Y)>();
             var last = (0, 0);
             foreach (var directionAndDistance in wire)
             {
                 var marked = GetCoords(last, directionAndDistance).ToList();
                 last = marked.Last();
-                wirePresentAt.UnionWith(marked);
+                wirePresentAt.AddRange(marked);
             }
 
             return wirePresentAt;

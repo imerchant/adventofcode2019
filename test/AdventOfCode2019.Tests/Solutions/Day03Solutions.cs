@@ -1,3 +1,4 @@
+using System.Linq;
 using AdventOfCode2019.Day03;
 using AdventOfCode2019.Inputs;
 using FluentAssertions;
@@ -25,6 +26,16 @@ namespace AdventOfCode2019.Tests.Solutions
             distance.Should().Be(2193);
         }
 
+        [Fact]
+        public void Puzzle2_FindLowestSumOfStepsToIntersection()
+        {
+            var wires = Input.Day03Parse(Input.Day03);
+
+            var steps = _wireGrid.FindSteps(wires.FirstWire, wires.SecondWire);
+
+            steps.First().CombinedSteps.Should().Be(63526);
+        }
+
         [Theory]
         [InlineData("R8,U5,L5,D3", "U7,R6,D4,L4", 6)]
         [InlineData("R75,D30,R83,U83,L12,D49,R71,U7,L72", "U62,R66,U55,R34,D71,R55,D58,R83", 159)]
@@ -35,6 +46,18 @@ namespace AdventOfCode2019.Tests.Solutions
             var wires = Input.Day03Parse(wireInput);
 
             _wireGrid.FindDistanceToClosestIntersection(wires.FirstWire, wires.SecondWire).Should().Be(expectedDistance);
+        }
+
+        [Theory]
+        [InlineData("R8,U5,L5,D3", "U7,R6,D4,L4", 30)]
+        [InlineData("R75,D30,R83,U83,L12,D49,R71,U7,L72", "U62,R66,U55,R34,D71,R55,D58,R83", 610)]
+        [InlineData("R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51", "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7", 410)]
+        public void FindLowestStepsToIntersection(string firstWire, string secondWire, int expectedSumOfSteps)
+        {
+            var wireInput = $"{firstWire}\n{secondWire}";
+            var wires = Input.Day03Parse(wireInput);
+
+            _wireGrid.FindSteps(wires.FirstWire, wires.SecondWire).First().CombinedSteps.Should().Be(expectedSumOfSteps);
         }
     }
 }
