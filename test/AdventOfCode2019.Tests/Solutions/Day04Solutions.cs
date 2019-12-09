@@ -22,7 +22,7 @@ namespace AdventOfCode2019.Tests.Solutions
 
             var count = _guesser.CountNumbersThatMeetCriteria(input.Low, input.High);
 
-            count.Should().Be(-1);
+            count.Should().Be(1048);
         }
 
         [Theory]
