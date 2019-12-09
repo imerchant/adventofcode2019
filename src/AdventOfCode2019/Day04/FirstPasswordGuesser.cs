@@ -2,7 +2,7 @@ using System.Linq;
 
 namespace AdventOfCode2019.Day04
 {
-    public class PasswordGuesser
+    public class FirstPasswordGuesser
     {
         public int CountNumbersThatMeetCriteria(int low, int high)
         {
