@@ -12,13 +12,14 @@ namespace AdventOfCode2019.Day05
         private int _index = 0;
 
         public IList<int> Program { get; }
-        public int InputValue { get; set; }
+        public int InputValue { get; }
         public IReadOnlyList<int> OutputValues => _outputs;
         public bool IsHalted { get; private set; }
 
-        public IntcodeComputer(IList<int> program)
+        public IntcodeComputer(IList<int> program, int inputValue)
         {
             Program = new List<int>(program);
+            InputValue = inputValue;
         }
 
         /// <summary>
@@ -42,7 +43,7 @@ namespace AdventOfCode2019.Day05
 
         public void Step()
         {
-            var (instruction, parameterModes) = FormatOpcode();
+            var (instruction, parameterModes) = ProcessOpcode();
 
             switch (instruction)
             {
@@ -61,6 +62,20 @@ namespace AdventOfCode2019.Day05
                 case InstructionType.Output:
                     Output(parameterModes);
                     break;
+                case InstructionType.JumpIfTrue:
+                    JumpIfTrue(parameterModes);
+                    break;
+                case InstructionType.JumpIfFalse:
+                    JumpIfFalse(parameterModes);
+                    break;
+                case InstructionType.LessThan:
+                    LessThan(parameterModes);
+                    break;
+                case InstructionType.Equals:
+                    EqualOperation(parameterModes);
+                    break;
+                default:
+                    throw new Exception($"Unknown InstructionType {instruction}");
             }
         }
 
@@ -98,6 +113,58 @@ namespace AdventOfCode2019.Day05
             _index += 4;
         }
 
+        private void JumpIfTrue(ParameterMode[] modes)
+        {
+            var param1 = GetValue(_index + 1, modes[0]);
+            var param2 = GetValue(_index + 2, modes[1]);
+
+            if (param1 != 0)
+            {
+                _index = param2;
+            }
+            else
+            {
+                _index += 3;
+            }
+        }
+
+        private void JumpIfFalse(ParameterMode[] modes)
+        {
+            var param1 = GetValue(_index + 1, modes[0]);
+            var param2 = GetValue(_index + 2, modes[1]);
+
+            if (param1 == 0)
+            {
+                _index = param2;
+            }
+            else
+            {
+                _index += 3;
+            }
+        }
+
+        private void LessThan(ParameterMode[] modes)
+        {
+            var param1 = GetValue(_index + 1, modes[0]);
+            var param2 = GetValue(_index + 2, modes[1]);
+            var param3 = Program[_index + 3];
+            var toStore = param1 < param2 ? 1 : 0;
+
+            Program[param3] = toStore;
+            _index += 4;
+        }
+
+        private void EqualOperation(ParameterMode[] modes)
+        {
+            var param1 = GetValue(_index + 1, modes[0]);
+            var param2 = GetValue(_index + 2, modes[1]);
+            var param3 = Program[_index + 3];
+            var toStore = param1 == param2 ? 1 : 0;
+
+            Program[param3] = toStore;
+            _index += 4;
+        }
+
         private int GetValue(int parameterIndex, ParameterMode mode)
         {
             var raw = Program[parameterIndex];
@@ -110,10 +177,9 @@ namespace AdventOfCode2019.Day05
                 default:
                     throw new Exception("Unknown parameter mode");
             }
-
         }
 
-        private (InstructionType Type, ParameterMode[] Modes) FormatOpcode()
+        private (InstructionType Type, ParameterMode[] Modes) ProcessOpcode()
         {
             var opcodeWithModes = Program[_index].ToString(OpcodeFormat);
             var opcode = int.Parse(opcodeWithModes.Substring(3));
@@ -132,6 +198,10 @@ namespace AdventOfCode2019.Day05
             Multiplication = 2,
             Input = 3,
             Output = 4,
+            JumpIfTrue = 5,
+            JumpIfFalse = 6,
+            LessThan = 7,
+            Equals = 8,
             Halt = 99
         }
 
