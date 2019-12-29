@@ -13,6 +13,16 @@ namespace AdventOfCode2019.Tests.Solutions
         {
         }
 
+        [Fact]
+        public void Puzzle1_CountConnections()
+        {
+            var orbits = Input.Day06Parse(Input.Day06);
+
+            var map = new OrbitMap(orbits);
+
+            map.Connections.Should().Be(139597);
+        }
+
         const string Example1 =
 @"COM)B
 B)C
@@ -33,7 +43,8 @@ K)L";
 
             var map = new OrbitMap(orbits);
 
-            map.Map.Should().HaveCount(12);
+            map.Should().HaveCount(12);
+            map.Connections.Should().Be(42);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace AdventOfCode2019.Day06
         public List<Body> Orbits { get; }
         public List<Body> OrbitedBy { get; }
 
-        public int Cardinality => OrbitedBy.Sum(x => x.Cardinality) + 1;
+        public int Cardinality => OrbitedBy.Count + OrbitedBy.Sum(x => x.Cardinality);
 
         public Body(string id)
         {
