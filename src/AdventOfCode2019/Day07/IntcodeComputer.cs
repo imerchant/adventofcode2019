@@ -41,9 +41,10 @@ namespace AdventOfCode2019.Day07
             return this;
         }
 
-        public void Step()
+        public bool Step()
         {
             var (instruction, parameterModes) = ProcessOpcode();
+            var generatedOutput = false;
 
             switch (instruction)
             {
@@ -61,6 +62,7 @@ namespace AdventOfCode2019.Day07
                     break;
                 case InstructionType.Output:
                     Output(parameterModes);
+                    generatedOutput = true;
                     break;
                 case InstructionType.JumpIfTrue:
                     JumpIfTrue(parameterModes);
@@ -77,6 +79,8 @@ namespace AdventOfCode2019.Day07
                 default:
                     throw new Exception($"Unknown InstructionType {instruction}");
             }
+
+            return generatedOutput;
         }
 
         private void Input()

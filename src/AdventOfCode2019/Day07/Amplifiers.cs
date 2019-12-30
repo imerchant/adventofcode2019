@@ -29,16 +29,68 @@ namespace AdventOfCode2019.Day07
             OutputToThrusters = lastOutput;
             return lastOutput;
         }
+
+        public int GetSignalWithFeedbackLoops()
+        {
+            var amplifiers = new Dictionary<char, Amplifier>(5);
+
+            var lastOutput = 0;
+            for (var k = 0; k < AmplifierIds.Length; ++k)
+            {
+                var ampId = AmplifierIds[k];
+                var amplifier = GetAmplifier(ampId);
+
+                var generatedOutput = false;
+                do
+                {
+                    generatedOutput = amplifier.Step();
+                }
+                while (!generatedOutput && !amplifier.IsHalted);
+
+                if (generatedOutput)
+                {
+                    lastOutput = amplifier.Output.Last();
+                }
+
+                if (ampId == 'E' && !amplifier.IsHalted)
+                {
+                    k = -1; // start over
+                }
+            }
+
+            OutputToThrusters = lastOutput;
+            return lastOutput;
+
+            Amplifier GetAmplifier(char id)
+            {
+                if (amplifiers.TryGetValue(id, out var amplifier))
+                {
+                    amplifier.Input.Enqueue(lastOutput);
+                    return amplifier;
+                }
+
+                amplifiers[id] = amplifier = new Amplifier(_controllerSoftware, _phaseSettings[id], lastOutput);
+                return amplifier;
+            }
+        }
     }
 
     public class Amplifier
     {
         private readonly IntcodeComputer _computer;
 
+        public bool IsHalted => _computer.IsHalted;
+
+        public Queue<int> Input => _computer.InputValues;
+
+        public IReadOnlyList<int> Output => _computer.OutputValues;
+
         public Amplifier(IList<int> program, int phaseSetting, int inputSignal)
         {
             _computer = new IntcodeComputer(program, phaseSetting, inputSignal);
         }
+
+        public bool Step() => _computer.Step();
 
         public int GetOutput()
         {
