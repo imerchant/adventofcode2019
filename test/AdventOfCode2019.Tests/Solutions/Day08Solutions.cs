@@ -26,6 +26,26 @@ namespace AdventOfCode2019.Tests.Solutions
         }
 
         [Fact]
+        public void Puzzle2_SteganographicMessageInImage()
+        {
+            const int width = 25;
+            const int height = 6;
+
+            var image = new SpaceImage(Input.Day08, width, height);
+
+            Output.WriteLine(string.Empty);
+            Output.WriteLine(image.Content);
+
+            // Produces: EJRGP
+            // ████   ██ ███   ██  ███  
+            // █       █ █  █ █  █ █  █ 
+            // ███     █ █  █ █    █  █ 
+            // █       █ ███  █ ██ ███  
+            // █    █  █ █ █  █  █ █    
+            // ████  ██  █  █  ███ █    
+        }
+
+        [Fact]
         public void SpaceImage_ImportsDataCorrectly()
         {
             const string imageData = "123456789012";

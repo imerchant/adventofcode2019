@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace AdventOfCode2019.Day08
 {
@@ -10,6 +12,8 @@ namespace AdventOfCode2019.Day08
 
         public Layer this[int index] => Layers[index];
 
+        public string Content { get; }
+
         public SpaceImage(string input, int width, int height)
         {
             var layerSize = width * height;
@@ -18,9 +22,31 @@ namespace AdventOfCode2019.Day08
 
             for (int k = 0; k < layerCount; k++)
             {
-                var content = input.Skip(k * layerSize).Take(layerSize);
-                Layers.Add(new Layer(content.AsString(), width, height));
+                var layerContent = input.Skip(k * layerSize).Take(layerSize);
+                Layers.Add(new Layer(layerContent.AsString(), width, height));
             }
+
+            var content = new StringBuilder(Layers[0].Content);
+
+            for (var k = 1; k < Layers.Count; ++k)
+            {
+                var layerContent = Layers[k].Content;
+                for (var j = 0; j < layerContent.Length; ++j)
+                {
+                    if (content[j] != '2')
+                        continue;
+                    content[j] = layerContent[j];
+                }
+            }
+
+            var allContent = content.ToString();
+            content.Clear();
+            for (int row = 0; row < height; row++)
+            {
+                var take = allContent.Skip(row * width).Take(width).ToArray();
+                content.Append(take).AppendLine();
+            }
+            Content = content.Replace('0', ' ').Replace('1', '█').ToString();
         }
 
         public IEnumerator<Layer> GetEnumerator()
