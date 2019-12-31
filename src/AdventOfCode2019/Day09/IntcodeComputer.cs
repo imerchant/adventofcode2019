@@ -31,12 +31,12 @@ namespace AdventOfCode2019.Day09
         }
 
         /// <summary>
-        /// Runs this IntcodeComputer to its halted state. If it takes more than 10,000 steps, halts and throws Exception.
+        /// Runs this IntcodeComputer to its halted state. If it takes more than 10,000 (or the given quantity) steps, halts and throws Exception.
         /// </summary>
-        public IntcodeComputer RunToHalt()
+        public IntcodeComputer RunToHalt(int maximumSteps = 10_000)
         {
             var count = 0;
-            while (!IsHalted && count++ < 10_000)
+            while (!IsHalted && count++ < maximumSteps)
             {
                 Step();
             }

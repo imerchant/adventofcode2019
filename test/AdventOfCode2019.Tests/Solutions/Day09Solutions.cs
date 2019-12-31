@@ -25,6 +25,17 @@ namespace AdventOfCode2019.Tests.Solutions
             computer.OutputValues.Should().BeEquivalentTo(new [] { new BigInteger(3598076521) });
         }
 
+        [Fact(Skip = "Adds about half a second to entire test suite runtime")]
+        public void Puzzle2_RunProgramWithInput2_WaitForResults()
+        {
+            var program = Input.Day09Parse(Input.Day09);
+            var computer = new IntcodeComputer(program, new BigInteger(2));
+
+            computer.RunToHalt(1_000_000);
+
+            computer.OutputValues.Should().BeEquivalentTo(new [] { new BigInteger(90722) });
+        }
+
         [Fact]
         public void IntcodeComputer_ReturnsQuine()
         {
