@@ -139,5 +139,37 @@ namespace AdventOfCode2019
                 ? source.Select(x => x.ParseEnum<TEnum>(ignoreCase, defaultValue)).ToList()
                 : new List<TEnum>(0);
         }
+
+        /// <summary>
+        /// Copies the given <paramref name="source"/> enumerable to a <see cref="DefaultDictionary{TKey,TValue}"/>
+        /// </summary>
+        /// <typeparam name="TSource">The type of the items in the source enumerable.</typeparam>
+        /// <typeparam name="TKey">The type of the key of the resulting Dictionary.</typeparam>
+        /// <typeparam name="TValue">The type of the value of the resulting Dictionary.</typeparam>
+        /// <param name="source">The source enumerable.</param>
+        /// <param name="keySelector">A function to generate the key from a given item.</param>
+        /// <param name="valueSelector">A function to generate the value from a given item.</param>
+        /// <param name="defaultFactory">The default factory to be used in the Dictionary.</param>
+        /// <returns>A DefaultDictionary containing the items of the given enumerable, transformed by the given selector functions.</returns>
+        /// <exception cref="ArgumentNullException">If any of the parameters are null.</exception>
+        public static IDictionary<TKey, TValue> ToDefaultDictionary<TSource, TKey, TValue>(this IEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector, Func<TKey, TValue> defaultFactory)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (keySelector == null)
+                throw new ArgumentNullException(nameof(keySelector));
+            if (valueSelector == null)
+                throw new ArgumentNullException(nameof(valueSelector));
+            if (defaultFactory == null)
+                throw new ArgumentNullException(nameof(defaultFactory));
+
+            var dict = new DefaultDictionary<TKey, TValue>(defaultFactory);
+            foreach (var item in source)
+            {
+                dict.Add(keySelector(item), valueSelector(item));
+            }
+            return dict;
+        }
     }
 }
