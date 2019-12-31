@@ -46,5 +46,7 @@ namespace AdventOfCode2019.Day08
             Width = width;
             Height = height;
         }
+
+        public int CountOf(char c) => Content.Count(x => x == c);
     }
 }
